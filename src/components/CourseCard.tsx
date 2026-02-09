@@ -1,0 +1,50 @@
+import { Star, Users, Clock } from 'lucide-react';
+import { Course } from '../data/mockData';
+import { Link } from 'react-router-dom';
+
+interface CourseCardProps {
+    course: Course;
+}
+
+export function CourseCard({ course }: CourseCardProps) {
+    return (
+        <Link to={`/courses/${course.id}`} className="block group">
+            <div className="border rounded-lg overflow-hidden bg-card hover:shadow-lg transition-shadow">
+                <div className="aspect-video relative overflow-hidden">
+                    <img
+                        src={course.image}
+                        alt={course.title}
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                    />
+                </div>
+                <div className="p-4 space-y-3">
+                    <div className="flex justify-between items-start">
+                        <h3 className="font-semibold truncate pr-2 group-hover:text-primary transition-colors">
+                            {course.title}
+                        </h3>
+                        <span className="font-bold text-primary">${course.price}</span>
+                    </div>
+
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                        {course.description}
+                    </p>
+
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
+                        <div className="flex items-center space-x-1">
+                            <Users className="h-3 w-3" />
+                            <span>{course.enrolled} students</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span>{course.rating} ({course.reviews})</span>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center text-xs text-muted-foreground pt-2 border-t mt-2">
+                        <span>By {course.instructor}</span>
+                    </div>
+                </div>
+            </div>
+        </Link>
+    );
+}
