@@ -1,14 +1,38 @@
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CourseCard } from '../components/CourseCard';
 import { SessionCard } from '../components/SessionCard';
 import { COURSES, SESSIONS } from '../data/mockData';
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import api from '../api';
 
 export function DashboardPage() {
     const { user } = useAuth();
-    const enrolledCourses = COURSES.slice(0, 2); // Mock enrolled courses
+    const enrolledCourses = COURSES.slice(0, 2); // Mock enrolled courses (backend not ready)
     const upcomingSessions = SESSIONS; // Mock upcoming sessions
+    const [myCourses, setMyCourses] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchMyCourses = async () => {
+            try {
+                const response = await api.get('/courses/my-courses');
+                const mappedCourses = response.data.map((c: any) => ({
+                    ...c,
+                    image: c.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=60',
+                    price: parseFloat(c.price) || 0,
+                    rating: 4.5,
+                    reviews: 0,
+                    enrolled: 0,
+                    instructor: user?.name
+                }));
+                setMyCourses(mappedCourses);
+            } catch (error) {
+                console.error('Error fetching my courses:', error);
+            }
+        };
+        fetchMyCourses();
+    }, [user]);
 
     return (
         <div className="container mx-auto px-4 py-8 space-y-8">
@@ -30,6 +54,21 @@ export function DashboardPage() {
 
             <div className="grid md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 space-y-8">
+
+                    {/* My Created Courses Section */}
+                    {myCourses.length > 0 && (
+                        <section>
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-2xl font-bold">My Created Courses</h2>
+                            </div>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                {myCourses.map(course => (
+                                    <CourseCard key={course.id} course={course} />
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
                     <section>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-bold">Your Enrolled Courses</h2>
@@ -76,6 +115,10 @@ export function DashboardPage() {
                             <div className="flex justify-between">
                                 <span>Sessions Attended</span>
                                 <span className="font-mono font-bold">5</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Courses Created</span>
+                                <span className="font-mono font-bold">{myCourses.length}</span>
                             </div>
                         </div>
                     </div>

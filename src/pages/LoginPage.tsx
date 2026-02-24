@@ -5,13 +5,19 @@ import { useNavigate, Link } from 'react-router-dom';
 export function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        login(email);
-        navigate('/dashboard');
+        setError('');
+        try {
+            await login(email, password);
+            navigate('/dashboard');
+        } catch (err) {
+            setError('Invalid email or password');
+        }
     };
 
     return (
@@ -21,6 +27,12 @@ export function LoginPage() {
                     <h1 className="text-2xl font-bold">Welcome back</h1>
                     <p className="text-muted-foreground">Enter your credentials to access your account</p>
                 </div>
+
+                {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-2 rounded text-sm text-center">
+                        {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
@@ -45,6 +57,11 @@ export function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        <div className="text-right">
+                            <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                                Forgot password?
+                            </Link>
+                        </div>
                     </div>
                     <button
                         type="submit"

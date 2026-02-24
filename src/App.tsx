@@ -16,7 +16,21 @@ import { CourseDetailPage } from './pages/CourseDetailPage';
 import { CreateCoursePage } from './pages/CreateCoursePage';
 import { VideoCallPage } from './pages/VideoCallPage';
 import { DoubtClearingPage } from './pages/DoubtClearingPage';
+import { ProfileSetupPage } from './pages/ProfileSetupPage';
+import { SettingsPage } from './pages/SettingsPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { DoubtProvider } from './context/DoubtContext';
+
+import { useAuth } from './context/AuthContext';
+import { Navigate, Outlet } from 'react-router-dom';
+
+const ProfileCheck = () => {
+    const { user } = useAuth();
+    if (user && !user.username) {
+        return <Navigate to="/profile-setup" replace />;
+    }
+    return <Outlet />;
+};
 
 function App() {
     return (
@@ -29,6 +43,7 @@ function App() {
                                 <Route path="/" element={<LandingPage />} />
                                 <Route path="/login" element={<LoginPage />} />
                                 <Route path="/signup" element={<SignupPage />} />
+                                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
                                 <Route path="/courses" element={<CoursesPage />} />
                                 <Route path="/courses/:id" element={<CourseDetailPage />} />
@@ -36,9 +51,13 @@ function App() {
 
                                 {/* Protected Routes */}
                                 <Route element={<ProtectedRoute />}>
-                                    <Route path="/dashboard" element={<DashboardPage />} />
-                                    <Route path="/create-course" element={<CreateCoursePage />} />
-                                    <Route path="/session/:id" element={<VideoCallPage />} />
+                                    <Route element={<ProfileCheck />}>
+                                        <Route path="/dashboard" element={<DashboardPage />} />
+                                        <Route path="/create-course" element={<CreateCoursePage />} />
+                                        <Route path="/session/:id" element={<VideoCallPage />} />
+                                        <Route path="/settings" element={<SettingsPage />} />
+                                    </Route>
+                                    <Route path="/profile-setup" element={<ProfileSetupPage />} />
                                 </Route>
                             </Route>
                         </Routes>

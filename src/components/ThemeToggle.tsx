@@ -1,5 +1,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { motion, AnimatePresence } from "motion/react";
 
 export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
@@ -7,12 +8,36 @@ export function ThemeToggle() {
     return (
         <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
+            className="relative w-16 h-8 rounded-full bg-muted flex items-center px-1 transition-colors hover:bg-muted/80 overflow-hidden"
             aria-label="Toggle theme"
         >
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 top-2" />
-            <span className="sr-only">Toggle theme</span>
+            <AnimatePresence mode="wait" initial={false}>
+                {theme === "dark" ? (
+                    <motion.div
+                        key="moon"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 20, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute right-1"
+                    >
+                        <Moon className="h-6 w-6 text-foreground" fill="currentColor" />
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="sun"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 20, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute left-1"
+                    >
+                        <Sun className="h-6 w-6 text-primary" fill="currentColor" />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Background elements for sky effect could be added here if needed */}
         </button>
     );
 }

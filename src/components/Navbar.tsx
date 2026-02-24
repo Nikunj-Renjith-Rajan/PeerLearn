@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ThemeToggle } from './ThemeToggle';
+import { ProfileDropdown } from './ProfileDropdown';
 import { GraduationCap, LogOut, User, Menu, X } from 'lucide-react';
 
 export function Navbar() {
@@ -32,18 +32,8 @@ export function Navbar() {
                             <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
                                 Dashboard
                             </Link>
-                            <div className="flex items-center space-x-4 ml-4 pl-4 border-l">
-                                <div className="flex items-center space-x-2">
-                                    <User className="h-5 w-5" />
-                                    <span className="text-sm font-medium">{user.name}</span>
-                                </div>
-                                <button
-                                    onClick={handleLogout}
-                                    className="flex items-center space-x-1 text-sm font-medium text-destructive hover:text-destructive/80 transition-colors"
-                                >
-                                    <LogOut className="h-4 w-4" />
-                                    <span>Logout</span>
-                                </button>
+                            <div className="ml-4">
+                                <ProfileDropdown />
                             </div>
                         </>
                     ) : (
@@ -59,12 +49,10 @@ export function Navbar() {
                             </Link>
                         </div>
                     )}
-                    <ThemeToggle />
                 </div>
 
                 {/* Mobile Menu Toggle */}
                 <div className="flex items-center space-x-4 md:hidden">
-                    <ThemeToggle />
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="p-2 -mr-2"
@@ -76,61 +64,63 @@ export function Navbar() {
             </div>
 
             {/* Mobile Nav */}
-            {isMenuOpen && (
-                <div className="md:hidden border-t p-4 space-y-4 bg-background">
-                    <Link
-                        to="/courses"
-                        className="block text-sm font-medium hover:text-primary transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                    >
-                        Browse Courses
-                    </Link>
-                    {user ? (
-                        <>
-                            <Link
-                                to="/dashboard"
-                                className="block text-sm font-medium hover:text-primary transition-colors"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Dashboard
-                            </Link>
-                            <div className="pt-4 border-t space-y-4">
-                                <div className="flex items-center space-x-2">
-                                    <User className="h-5 w-5" />
-                                    <span className="text-sm font-medium">{user.name}</span>
-                                </div>
-                                <button
-                                    onClick={() => {
-                                        handleLogout();
-                                        setIsMenuOpen(false);
-                                    }}
-                                    className="flex items-center space-x-1 text-sm font-medium text-destructive hover:text-destructive/80 transition-colors w-full"
+            {
+                isMenuOpen && (
+                    <div className="md:hidden border-t p-4 space-y-4 bg-background">
+                        <Link
+                            to="/courses"
+                            className="block text-sm font-medium hover:text-primary transition-colors"
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            Browse Courses
+                        </Link>
+                        {user ? (
+                            <>
+                                <Link
+                                    to="/dashboard"
+                                    className="block text-sm font-medium hover:text-primary transition-colors"
+                                    onClick={() => setIsMenuOpen(false)}
                                 >
-                                    <LogOut className="h-4 w-4" />
-                                    <span>Logout</span>
-                                </button>
+                                    Dashboard
+                                </Link>
+                                <div className="pt-4 border-t space-y-4">
+                                    <div className="flex items-center space-x-2">
+                                        <User className="h-5 w-5" />
+                                        <span className="text-sm font-medium">{user.name}</span>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            handleLogout();
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="flex items-center space-x-1 text-sm font-medium text-destructive hover:text-destructive/80 transition-colors w-full"
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                        <span>Logout</span>
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="pt-4 border-t space-y-4">
+                                <Link
+                                    to="/login"
+                                    className="block text-sm font-medium hover:text-primary transition-colors"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Log in
+                                </Link>
+                                <Link
+                                    to="/signup"
+                                    className="block w-full text-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Sign up
+                                </Link>
                             </div>
-                        </>
-                    ) : (
-                        <div className="pt-4 border-t space-y-4">
-                            <Link
-                                to="/login"
-                                className="block text-sm font-medium hover:text-primary transition-colors"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Log in
-                            </Link>
-                            <Link
-                                to="/signup"
-                                className="block w-full text-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                Sign up
-                            </Link>
-                        </div>
-                    )}
-                </div>
-            )}
-        </nav>
+                        )}
+                    </div>
+                )
+            }
+        </nav >
     );
 }
